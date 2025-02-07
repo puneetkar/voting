@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Voting System</h1>
+        <button onclick="castVote('v1')">Vote for V1</button>
+        <button onclick="castVote('v2')">Vote for V2</button>
+        <button onclick="getResults()">Show Results</button>
+        
+        <div id="results"></div>
+    </div>
+    
+    <script>
+        function castVote(choice) {
+            fetch('/vote/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ choice: choice })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function getResults() {
+            fetch('/results/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerHTML = `
+                    <p>Votes for V1: ${data.v1}</p>
+                    <p>Votes for V2: ${data.v2}</p>
+                    <strong>${data.winner}</strong>
+                `;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
